@@ -2,28 +2,60 @@ package valueutils
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"strconv"
 
 	"github.com/lrills/helm-unittest/internal/common"
+
+	"github.com/PaesslerAG/gval"
+	"github.com/PaesslerAG/jsonpath"
 )
 
+var (
+	builder gval.Language
+)
+
+func init() {
+	builder = gval.Full(jsonpath.PlaceholderExtension())
+}
+
+// // GetValueOfSetPath get the value of the `--set` format path from a manifest
+// func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
+// 	if path == "" {
+// 		return manifest, nil
+// 	}
+// 	return jsonpath.Get(path, manifest)
+// }
+
 // GetValueOfSetPath get the value of the `--set` format path from a manifest
-func GetValueOfSetPath(manifest common.K8sManifest, path string) (interface{}, error) {
+func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
 	if path == "" {
 		return manifest, nil
 	}
-	tr := fetchTraverser{manifest}
-	reader := bytes.NewBufferString(path)
-	if e := traverseSetPath(reader, &tr, expectKey); e != nil {
-		return nil, e
+	p, err := builder.NewEvaluable(path)
+	if err != nil {
+		return nil, err
 	}
-	return tr.data, nil
+	return p(context.Background(), manifest)
 }
 
+// GetValueOfSetPath get the value of the `--set` format path from a manifest
+// func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
+// 	if path == "" {
+// 		return manifest, nil
+// 	}
+// 	tr := fetchTraverser{manifest}
+// 	reader := bytes.NewBufferString(path)
+// 	if e := traverseSetPath(reader, &tr, expectKey); e != nil {
+// 		return nil, e
+// 	}
+// 	return tr.data, nil
+// }
+
 // BuildValueOfSetPath build the complete form the `--set` format path and its value
-func BuildValueOfSetPath(val interface{}, path string) (map[interface{}]interface{}, error) {
+func BuildValueOfSetPath(val interface{}, path string) (map[string]interface{}, error) {
 	if path == "" {
 		return nil, fmt.Errorf("set path is empty")
 	}
@@ -36,14 +68,14 @@ func BuildValueOfSetPath(val interface{}, path string) (map[interface{}]interfac
 }
 
 // MergeValues deeply merge values, copied from helm
-func MergeValues(dest map[interface{}]interface{}, src map[interface{}]interface{}) map[interface{}]interface{} {
+func MergeValues(dest map[string]interface{}, src map[string]interface{}) map[string]interface{} {
 	for k, v := range src {
 		// If the key doesn't exist already, then just set the key to that value
 		if _, exists := dest[k]; !exists {
 			dest[k] = v
 			continue
 		}
-		nextMap, ok := v.(map[interface{}]interface{})
+		nextMap, ok := v.(map[string]interface{})
 		// If it isn't another map, overwrite the value
 		if !ok {
 			dest[k] = v
@@ -55,7 +87,7 @@ func MergeValues(dest map[interface{}]interface{}, src map[interface{}]interface
 			continue
 		}
 		// Edge case: If the key exists in the destination, but isn't a map
-		destMap, isMap := dest[k].(map[interface{}]interface{})
+		destMap, isMap := dest[k].(map[string]interface{})
 		// If the source map has a map for this key, prefer it
 		if !isMap {
 			dest[k] = v
@@ -77,10 +109,10 @@ type fetchTraverser struct {
 }
 
 func (tr *fetchTraverser) traverseMapKey(key string) error {
-	if dmap, ok := tr.data.(map[interface{}]interface{}); ok {
+	if dmap, ok := tr.data.(map[string]interface{}); ok {
 		tr.data = dmap[key]
 		return nil
-	} else if dman, ok := tr.data.(common.K8sManifest); ok {
+	} else if dman, ok := tr.data.(map[string]interface{}); ok {
 		tr.data = dman[key]
 		return nil
 	}
@@ -119,8 +151,8 @@ func (tr *buildTraverser) traverseListIdx(idx int) error {
 	return nil
 }
 
-func (tr buildTraverser) getBuildedData() map[interface{}]interface{} {
-	builded := make(map[interface{}]interface{})
+func (tr buildTraverser) getBuildedData() map[string]interface{} {
+	builded := make(map[string]interface{})
 	var current interface{} = builded
 	for depth, cursor := range tr.cursors {
 		var next interface{}
@@ -130,11 +162,11 @@ func (tr buildTraverser) getBuildedData() map[interface{}]interface{} {
 			if idx, ok := tr.cursors[depth+1].(int); ok {
 				next = make([]interface{}, idx+1)
 			} else {
-				next = make(map[interface{}]interface{})
+				next = make(map[string]interface{})
 			}
 		}
 		if key, isString := cursor.(string); isString {
-			current.(map[interface{}]interface{})[key] = next
+			current.(map[string]interface{})[key] = next
 		} else {
 			current.([]interface{})[cursor.(int)] = next
 		}

@@ -13,29 +13,29 @@ import (
 const cache_before string = "cached before"
 
 var lastTimeContent = `cached before:
-  1: |
-    a:
-      b: c
-  2: |
-    d:
-      e: f
+    1: |
+        a:
+            b: c
+    2: |
+        d:
+            e: f
 `
 
-var snapshot1 = "a:\n  b: c\n"
+var snapshot1 = "a:\n    b: c\n"
 var content1 = map[string]interface{}{
 	"a": map[string]string{
 		"b": "c",
 	},
 }
 
-var snapshot2 = "d:\n  e: f\n"
+var snapshot2 = "d:\n    e: f\n"
 var content2 = map[string]interface{}{
 	"d": map[string]string{
 		"e": "f",
 	},
 }
 
-var snapshotNew = "x:\n  \"y\": z\n"
+var snapshotNew = "x:\n    \"y\": z\n"
 var contentNew = map[string]interface{}{
 	"x": map[string]string{
 		"y": "z",
@@ -89,9 +89,9 @@ func TestCacheWhenFirstTime(t *testing.T) {
 	verifyCache(a, cache, true, true, 1, 1, 0, 0, 0)
 
 	expectedCacheContent := `new test:
-  1: |
-    a:
-      b: c
+    1: |
+        a:
+            b: c
 `
 	bytes, _ := ioutil.ReadFile(cache.Filepath)
 	a.Equal(expectedCacheContent, string(bytes))
@@ -195,12 +195,12 @@ func TestCacheWhenChangedIfIsUpdating(t *testing.T) {
 
 	bytes, _ := ioutil.ReadFile(cache.Filepath)
 	a.Equal(`cached before:
-  1: |
-    a:
-      b: c
-  2: |
-    x:
-      "y": z
+    1: |
+        a:
+            b: c
+    2: |
+        x:
+            "y": z
 `, string(bytes))
 }
 
@@ -222,9 +222,9 @@ func TestCacheWhenHasVanished(t *testing.T) {
 
 	bytes, _ := ioutil.ReadFile(cache.Filepath)
 	a.Equal(`cached before:
-  1: |
-    a:
-      b: c
+    1: |
+        a:
+            b: c
 `, string(bytes))
 }
 
@@ -253,15 +253,15 @@ func TestCacheWhenHasInserted(t *testing.T) {
 
 	bytes, _ := ioutil.ReadFile(cache.Filepath)
 	a.Equal(`cached before:
-  1: |
-    a:
-      b: c
-  2: |
-    d:
-      e: f
-  3: |
-    x:
-      "y": z
+    1: |
+        a:
+            b: c
+    2: |
+        d:
+            e: f
+    3: |
+        x:
+            "y": z
 `, string(bytes))
 }
 
@@ -291,15 +291,15 @@ func TestCacheWhenNewOneAtMiddle(t *testing.T) {
 
 	bytes, _ := ioutil.ReadFile(cache.Filepath)
 	a.Equal(`cached before:
-  1: |
-    a:
-      b: c
-  2: |
-    d:
-      e: f
-  3: |
-    d:
-      e: f
+    1: |
+        a:
+            b: c
+    2: |
+        d:
+            e: f
+    3: |
+        d:
+            e: f
 `, string(bytes))
 }
 
@@ -330,14 +330,14 @@ func TestCacheWhenNewOneAtMiddleIfIsUpdating(t *testing.T) {
 
 	bytes, _ := ioutil.ReadFile(cache.Filepath)
 	a.Equal(`cached before:
-  1: |
-    a:
-      b: c
-  2: |
-    x:
-      "y": z
-  3: |
-    d:
-      e: f
+    1: |
+        a:
+            b: c
+    2: |
+        x:
+            "y": z
+    3: |
+        d:
+            e: f
 `, string(bytes))
 }

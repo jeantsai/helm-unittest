@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +13,7 @@ func TestIsKindValidatorWhenOk(t *testing.T) {
 
 	v := IsKindValidator{"Pod"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -27,7 +26,7 @@ func TestIsKindValidatorWhenNegativeAndOk(t *testing.T) {
 
 	v := IsKindValidator{"Pod"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -41,7 +40,7 @@ func TestIsKindValidatorWhenFail(t *testing.T) {
 
 	v := IsKindValidator{"Service"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -60,7 +59,7 @@ func TestIsKindValidatorWhenNegativeAndFail(t *testing.T) {
 
 	v := IsKindValidator{"Pod"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true},
 	)
 	assert.False(t, pass)
@@ -77,7 +76,7 @@ func TestIsKindValidatorWhenInvalidIndex(t *testing.T) {
 
 	validator := IsKindValidator{"Pod"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 

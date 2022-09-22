@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,7 +16,7 @@ func TestFailedTemplateValidatorWhenOk(t *testing.T) {
 	validator := FailedTemplateValidator{"A field should be required"}
 
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -29,7 +28,7 @@ func TestFailedTemplateValidatorWhenNegativeAndOk(t *testing.T) {
 
 	validator := FailedTemplateValidator{"A field should not be required"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -42,7 +41,7 @@ func TestFailedTemplateValidatorWhenFail(t *testing.T) {
 
 	validator := FailedTemplateValidator{"A field should not be required"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -60,7 +59,7 @@ func TestFailedTemplateValidatorWhenNegativeAndFail(t *testing.T) {
 
 	v := FailedTemplateValidator{"A field should be required"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -76,7 +75,7 @@ func TestFailedTemplateValidatorWhenInvalidIndex(t *testing.T) {
 	manifest := makeManifest(failedTemplate)
 	validator := FailedTemplateValidator{"A field should be required"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 

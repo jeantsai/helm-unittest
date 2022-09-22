@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/lrills/helm-unittest/internal/common"
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 )
 
 // CompareResult result return by Cache.Compare

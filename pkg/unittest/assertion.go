@@ -25,7 +25,7 @@ type Assertion struct {
 
 // Assert validate the rendered manifests with validator
 func (a *Assertion) Assert(
-	templatesResult map[string][]common.K8sManifest,
+	templatesResult map[string][]map[string]interface{},
 	snapshotComparer validators.SnapshotComparer,
 	renderSucceed bool,
 	result *results.AssertionResult,

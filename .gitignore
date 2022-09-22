@@ -13,3 +13,5 @@ _dist
 .DS_Store
 
 .idea
+
+*.snap

@@ -6,7 +6,7 @@ import (
 
 	"github.com/lrills/helm-unittest/internal/common"
 	"github.com/lrills/helm-unittest/pkg/unittest/valueutils"
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 )
 
 // ContainsValidator validate whether value of Path is an array and contains Content
@@ -36,7 +36,7 @@ func (v ContainsValidator) validateContent(actual []interface{}) (bool, int) {
 	for _, ele := range actual {
 		// When any enabled, only the key is validated
 		if v.Any {
-			if subset, ok := ele.(map[interface{}]interface{}); ok {
+			if subset, ok := ele.(map[string]interface{}); ok {
 				if validateSubset(subset, v.Content) {
 					found = true
 					validateFoundCount++

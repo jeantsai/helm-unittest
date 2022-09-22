@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,7 +16,7 @@ func TestEqualRawValidatorWhenOk(t *testing.T) {
 	validator := EqualRawValidator{"This is a NOTES.txt document."}
 
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -29,7 +28,7 @@ func TestEqualRawValidatorWhenNegativeAndOk(t *testing.T) {
 
 	validator := EqualRawValidator{"Invalid text."}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -42,7 +41,7 @@ func TestEqualRawValidatorWhenFail(t *testing.T) {
 
 	validator := EqualRawValidator{"Invalid text."}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -65,7 +64,7 @@ func TestEqualRawValidatorWhenNegativeAndFail(t *testing.T) {
 
 	v := EqualRawValidator{"This is a NOTES.txt document."}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -80,7 +79,7 @@ func TestEqualRawValidatorWhenInvalidIndex(t *testing.T) {
 	manifest := makeManifest(docToTestEqualRaw)
 	validator := EqualRawValidator{"Invalid text."}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 

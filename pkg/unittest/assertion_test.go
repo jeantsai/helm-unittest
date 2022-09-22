@@ -8,14 +8,14 @@ import (
 	"github.com/lrills/helm-unittest/pkg/unittest/results"
 	"github.com/lrills/helm-unittest/pkg/unittest/snapshot"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 )
 
 func validateSucceededTestAssertions(
 	t *testing.T,
 	assertionsYAML string,
 	assertionCount int,
-	renderedMap map[string][]common.K8sManifest) {
+	renderedMap map[string][]map[string]interface{}) {
 
 	assertions := make([]Assertion, assertionCount)
 	err := yaml.Unmarshal([]byte(assertionsYAML), &assertions)
@@ -178,10 +178,11 @@ a: b
 c: [d]
 e:
   f: g
+z:
 `
-	manifest := common.K8sManifest{}
+	manifest := map[string]interface{}{}
 	yaml.Unmarshal([]byte(manifestDoc), &manifest)
-	renderedMap := map[string][]common.K8sManifest{
+	renderedMap := map[string][]map[string]interface{}{
 		"t.yaml": {manifest},
 	}
 
@@ -243,8 +244,8 @@ e:
 }
 
 func TestAssertionRawAssertWhenOk(t *testing.T) {
-	manifest := common.K8sManifest{common.RAW: "NOTES.txt"}
-	renderedMap := map[string][]common.K8sManifest{
+	manifest := map[string]interface{}{common.RAW: "NOTES.txt"}
+	renderedMap := map[string][]map[string]interface{}{
 		"t.yaml": {manifest},
 	}
 
@@ -271,8 +272,8 @@ func TestAssertionRawAssertWhenOk(t *testing.T) {
 }
 
 func TestAssertionAssertWhenTemplateNotExisted(t *testing.T) {
-	manifest := common.K8sManifest{}
-	renderedMap := map[string][]common.K8sManifest{
+	manifest := map[string]interface{}{}
+	renderedMap := map[string][]map[string]interface{}{
 		"existed.yaml": {manifest},
 	}
 	assertionYAML := `
@@ -297,8 +298,8 @@ equal:
 }
 
 func TestAssertionAssertWhenTemplateNotSpecifiedAndNoDefault(t *testing.T) {
-	manifest := common.K8sManifest{}
-	renderedMap := map[string][]common.K8sManifest{
+	manifest := map[string]interface{}{}
+	renderedMap := map[string][]map[string]interface{}{
 		"existed.yaml": {manifest},
 	}
 	assertionYAML := "equal:"

@@ -5,7 +5,7 @@ import (
 
 	"github.com/lrills/helm-unittest/internal/common"
 	"github.com/lrills/helm-unittest/pkg/unittest/valueutils"
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 )
 
 // IsSubsetValidator validate whether value of Path contains Content
@@ -43,7 +43,7 @@ func (v IsSubsetValidator) Validate(context *ValidateContext) (bool, []string) {
 			continue
 		}
 
-		if actual, ok := actual.(map[interface{}]interface{}); ok {
+		if actual, ok := actual.(map[string]interface{}); ok {
 			found := validateSubset(actual, v.Content)
 
 			if found == context.Negative {

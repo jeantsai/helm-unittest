@@ -8,7 +8,7 @@ import (
 
 	"github.com/lrills/helm-unittest/pkg/unittest/results"
 	"github.com/lrills/helm-unittest/pkg/unittest/snapshot"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 	v3loader "helm.sh/helm/v3/pkg/chart/loader"
 	v2chart "k8s.io/helm/pkg/proto/hapi/chart"
 )
@@ -29,7 +29,7 @@ func ParseTestSuiteFile(suiteFilePath, chartRoute string, strict bool, valueFile
 	}
 
 	if strict {
-		if err := yaml.UnmarshalStrict(content, &suite); err != nil {
+		if err := yaml.Unmarshal(content, &suite); err != nil {
 			return &suite, err
 		}
 	} else {

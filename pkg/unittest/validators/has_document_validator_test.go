@@ -3,17 +3,16 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHasDocumentsValidatorOk(t *testing.T) {
-	data := common.K8sManifest{}
+	data := map[string]interface{}{}
 
 	validator := HasDocumentsValidator{2}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{data, data},
+		Docs: []map[string]interface{}{data, data},
 	})
 
 	assert.True(t, pass)
@@ -21,11 +20,11 @@ func TestHasDocumentsValidatorOk(t *testing.T) {
 }
 
 func TestHasDocumentsValidatorWhenNegativeAndOk(t *testing.T) {
-	data := common.K8sManifest{}
+	data := map[string]interface{}{}
 
 	validator := HasDocumentsValidator{2}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{data},
+		Docs:     []map[string]interface{}{data},
 		Negative: true,
 	})
 
@@ -34,11 +33,11 @@ func TestHasDocumentsValidatorWhenNegativeAndOk(t *testing.T) {
 }
 
 func TestHasDocumentsValidatorWhenFail(t *testing.T) {
-	data := common.K8sManifest{}
+	data := map[string]interface{}{}
 
 	validator := HasDocumentsValidator{1}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{data, data},
+		Docs: []map[string]interface{}{data, data},
 	})
 
 	assert.False(t, pass)
@@ -51,11 +50,11 @@ func TestHasDocumentsValidatorWhenFail(t *testing.T) {
 }
 
 func TestHasDocumentsValidatorWhenNegativeAndFail(t *testing.T) {
-	data := common.K8sManifest{}
+	data := map[string]interface{}{}
 
 	validator := HasDocumentsValidator{2}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{data, data},
+		Docs:     []map[string]interface{}{data, data},
 		Negative: true,
 	})
 

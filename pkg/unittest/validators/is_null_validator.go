@@ -31,18 +31,38 @@ func (v IsNullValidator) Validate(context *ValidateContext) (bool, []string) {
 
 	for idx, manifest := range manifests {
 		actual, err := valueutils.GetValueOfSetPath(manifest, v.Path)
-		if err != nil {
-			validateSuccess = false
-			errorMessage := splitInfof(errorFormat, idx, err.Error())
-			validateErrors = append(validateErrors, errorMessage...)
-			continue
-		}
 
-		if actual == nil == context.Negative {
-			validateSuccess = false
-			errorMessage := v.failInfo(actual, idx, context.Negative)
-			validateErrors = append(validateErrors, errorMessage...)
-			continue
+		//#### Option 1: Path must exist excepting the last part. but "xxx:" in YAML is not valid in json ####
+		// if err != nil {
+		// 	validateSuccess = false
+		// 	errorMessage := splitInfof(errorFormat, idx, err.Error())
+		// 	validateErrors = append(validateErrors, errorMessage...)
+		// 	continue
+		// }
+
+		// if actual == nil == context.Negative {
+		// 	validateSuccess = false
+		// 	errorMessage := v.failInfo(actual, idx, context.Negative)
+		// 	validateErrors = append(validateErrors, errorMessage...)
+		// 	continue
+		// }
+		
+
+		//#### Option 2: Assume any invalid path as NULL ####
+		if context.Negative {
+			if err != nil || actual == nil {
+				validateSuccess = false
+				errorMessage := v.failInfo(actual, idx, context.Negative)
+				validateErrors = append(validateErrors, errorMessage...)
+				continue
+			}
+		} else {
+			if err == nil && actual != nil {
+				validateSuccess = false
+				errorMessage := v.failInfo(actual, idx, context.Negative)
+				validateErrors = append(validateErrors, errorMessage...)
+				continue
+			}
 		}
 
 		validateSuccess = determineSuccess(idx, validateSuccess, true)

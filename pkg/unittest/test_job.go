@@ -16,7 +16,7 @@ import (
 	"github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/lrills/helm-unittest/pkg/unittest/valueutils"
 
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 
 	v3chart "helm.sh/helm/v3/pkg/chart"
 	v3util "helm.sh/helm/v3/pkg/chartutil"
@@ -51,11 +51,11 @@ func spliteChartRoutes(routePath string) []string {
 	return routes
 }
 
-func scopeValuesWithRoutes(routes []string, values map[interface{}]interface{}) map[interface{}]interface{} {
+func scopeValuesWithRoutes(routes []string, values map[string]interface{}) map[string]interface{} {
 	if len(routes) > 1 {
 		return scopeValuesWithRoutes(
 			routes[:len(routes)-1],
-			map[interface{}]interface{}{
+			map[string]interface{}{
 				routes[len(routes)-1]: values,
 			},
 		)
@@ -99,12 +99,12 @@ func parseRenderError(regexPattern, errorMessage string) (string, string) {
 	return filePath, content
 }
 
-func parseYamlFile(rendered string) ([]common.K8sManifest, error) {
+func parseYamlFile(rendered string) ([]map[string]interface{}, error) {
 	decoder := yaml.NewDecoder(strings.NewReader(rendered))
-	parsedYamls := make([]common.K8sManifest, 0)
+	parsedYamls := make([]map[string]interface{}, 0)
 
 	for {
-		parsedYaml := common.K8sManifest{}
+		parsedYaml := map[string]interface{}{}
 		if err := decoder.Decode(parsedYaml); err != nil {
 			if err == io.EOF {
 				break
@@ -121,9 +121,9 @@ func parseYamlFile(rendered string) ([]common.K8sManifest, error) {
 	return parsedYamls, nil
 }
 
-func parseTextFile(rendered string) []common.K8sManifest {
-	manifests := make([]common.K8sManifest, 0)
-	manifest := make(common.K8sManifest)
+func parseTextFile(rendered string) []map[string]interface{} {
+	manifests := make([]map[string]interface{}, 0)
+	manifest := make(map[string]interface{})
 	manifest[common.RAW] = rendered
 
 	if len(manifest) > 0 {
@@ -262,11 +262,11 @@ func (t *TestJob) RunV3(
 
 // liberally borrows from helm-template
 func (t *TestJob) getUserValues() ([]byte, error) {
-	base := map[interface{}]interface{}{}
+	base := map[string]interface{}{}
 	routes := spliteChartRoutes(t.chartRoute)
 
 	for _, specifiedPath := range t.Values {
-		value := map[interface{}]interface{}{}
+		value := map[string]interface{}{}
 		var valueFilePath string
 		if path.IsAbs(specifiedPath) {
 			valueFilePath = specifiedPath
@@ -604,10 +604,10 @@ func (t *TestJob) capabilitiesV3() *v3util.Capabilities {
 
 // parse rendered manifest if it's yaml
 func (t *TestJob) parseManifestsFromOutputOfFiles(outputOfFiles map[string]string) (
-	map[string][]common.K8sManifest,
+	map[string][]map[string]interface{},
 	error,
 ) {
-	manifestsOfFiles := make(map[string][]common.K8sManifest)
+	manifestsOfFiles := make(map[string][]map[string]interface{})
 
 	for file, rendered := range outputOfFiles {
 
@@ -629,7 +629,7 @@ func (t *TestJob) parseManifestsFromOutputOfFiles(outputOfFiles map[string]strin
 
 // run Assert of all assertions of test
 func (t *TestJob) runAssertions(
-	manifestsOfFiles map[string][]common.K8sManifest,
+	manifestsOfFiles map[string][]map[string]interface{},
 	snapshotComparer validators.SnapshotComparer,
 	renderSucceed, failfast bool,
 ) (bool, []*results.AssertionResult) {
