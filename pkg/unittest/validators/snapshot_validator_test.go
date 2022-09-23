@@ -3,14 +3,13 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	"github.com/lrills/helm-unittest/pkg/unittest/snapshot"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSnapshotValidatorWhenOk(t *testing.T) {
-	data := common.K8sManifest{"a": "b"}
+	data := map[string]interface{}{"a": "b"}
 	validator := MatchSnapshotValidator{Path: "a"}
 
 	mockComparer := new(mockSnapshotComparer)
@@ -19,7 +18,7 @@ func TestSnapshotValidatorWhenOk(t *testing.T) {
 	})
 
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:             []common.K8sManifest{data},
+		Docs:             []map[string]interface{}{data},
 		SnapshotComparer: mockComparer,
 	})
 
@@ -30,7 +29,7 @@ func TestSnapshotValidatorWhenOk(t *testing.T) {
 }
 
 func TestSnapshotValidatorWhenNegativeAndOk(t *testing.T) {
-	data := common.K8sManifest{"a": "b"}
+	data := map[string]interface{}{"a": "b"}
 	validator := MatchSnapshotValidator{Path: "a"}
 
 	mockComparer := new(mockSnapshotComparer)
@@ -42,7 +41,7 @@ func TestSnapshotValidatorWhenNegativeAndOk(t *testing.T) {
 
 	pass, diff := validator.Validate(&ValidateContext{
 		Negative:         true,
-		Docs:             []common.K8sManifest{data},
+		Docs:             []map[string]interface{}{data},
 		SnapshotComparer: mockComparer,
 	})
 
@@ -53,7 +52,7 @@ func TestSnapshotValidatorWhenNegativeAndOk(t *testing.T) {
 }
 
 func TestSnapshotValidatorWhenFail(t *testing.T) {
-	data := common.K8sManifest{"a": "b"}
+	data := map[string]interface{}{"a": "b"}
 	validator := MatchSnapshotValidator{Path: "a"}
 
 	mockComparer := new(mockSnapshotComparer)
@@ -64,7 +63,7 @@ func TestSnapshotValidatorWhenFail(t *testing.T) {
 	})
 
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:             []common.K8sManifest{data},
+		Docs:             []map[string]interface{}{data},
 		SnapshotComparer: mockComparer,
 	})
 
@@ -86,7 +85,7 @@ func TestSnapshotValidatorWhenFail(t *testing.T) {
 }
 
 func TestSnapshotValidatorWhenNegativeAndFail(t *testing.T) {
-	data := common.K8sManifest{"a": "b"}
+	data := map[string]interface{}{"a": "b"}
 	validator := MatchSnapshotValidator{Path: "a"}
 
 	cached := "a:\n  b: c\n"
@@ -99,7 +98,7 @@ func TestSnapshotValidatorWhenNegativeAndFail(t *testing.T) {
 
 	pass, diff := validator.Validate(&ValidateContext{
 		Negative:         true,
-		Docs:             []common.K8sManifest{data},
+		Docs:             []map[string]interface{}{data},
 		SnapshotComparer: mockComparer,
 	})
 
@@ -120,7 +119,7 @@ func TestSnapshotValidatorWhenInvalidIndex(t *testing.T) {
 
 	validator := MatchSnapshotValidator{Path: "a"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 
@@ -144,7 +143,7 @@ func TestSnapshotValidatorWhenInvalidPath(t *testing.T) {
 
 	validator := MatchSnapshotValidator{Path: "x.b"}
 	pass, _ := validator.Validate(&ValidateContext{
-		Docs:             []common.K8sManifest{manifest},
+		Docs:             []map[string]interface{}{manifest},
 		SnapshotComparer: mockComparer,
 	})
 

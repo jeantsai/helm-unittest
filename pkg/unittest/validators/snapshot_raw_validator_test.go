@@ -10,7 +10,7 @@ import (
 )
 
 func TestSnapshotRawValidatorWhenOk(t *testing.T) {
-	data := common.K8sManifest{common.RAW: "b"}
+	data := map[string]interface{}{common.RAW: "b"}
 	validator := MatchSnapshotRawValidator{}
 
 	mockComparer := new(mockSnapshotComparer)
@@ -19,7 +19,7 @@ func TestSnapshotRawValidatorWhenOk(t *testing.T) {
 	})
 
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:             []common.K8sManifest{data},
+		Docs:             []map[string]interface{}{data},
 		SnapshotComparer: mockComparer,
 	})
 
@@ -30,7 +30,7 @@ func TestSnapshotRawValidatorWhenOk(t *testing.T) {
 }
 
 func TestSnapshotRawValidatorWhenNegativeAndOk(t *testing.T) {
-	data := common.K8sManifest{common.RAW: "b"}
+	data := map[string]interface{}{common.RAW: "b"}
 	validator := MatchSnapshotRawValidator{}
 
 	mockComparer := new(mockSnapshotComparer)
@@ -42,7 +42,7 @@ func TestSnapshotRawValidatorWhenNegativeAndOk(t *testing.T) {
 
 	pass, diff := validator.Validate(&ValidateContext{
 		Negative:         true,
-		Docs:             []common.K8sManifest{data},
+		Docs:             []map[string]interface{}{data},
 		SnapshotComparer: mockComparer,
 	})
 
@@ -53,7 +53,7 @@ func TestSnapshotRawValidatorWhenNegativeAndOk(t *testing.T) {
 }
 
 func TestSnapshotRawValidatorWhenFail(t *testing.T) {
-	data := common.K8sManifest{common.RAW: "b"}
+	data := map[string]interface{}{common.RAW: "b"}
 	validator := MatchSnapshotRawValidator{}
 
 	mockComparer := new(mockSnapshotComparer)
@@ -64,7 +64,7 @@ func TestSnapshotRawValidatorWhenFail(t *testing.T) {
 	})
 
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:             []common.K8sManifest{data},
+		Docs:             []map[string]interface{}{data},
 		SnapshotComparer: mockComparer,
 	})
 
@@ -82,7 +82,7 @@ func TestSnapshotRawValidatorWhenFail(t *testing.T) {
 }
 
 func TestSnapshotRawValidatorWhenNegativeAndFail(t *testing.T) {
-	data := common.K8sManifest{common.RAW: "b"}
+	data := map[string]interface{}{common.RAW: "b"}
 	validator := MatchSnapshotRawValidator{}
 
 	cached := "b\n"
@@ -95,7 +95,7 @@ func TestSnapshotRawValidatorWhenNegativeAndFail(t *testing.T) {
 
 	pass, diff := validator.Validate(&ValidateContext{
 		Negative:         true,
-		Docs:             []common.K8sManifest{data},
+		Docs:             []map[string]interface{}{data},
 		SnapshotComparer: mockComparer,
 	})
 
@@ -109,11 +109,11 @@ func TestSnapshotRawValidatorWhenNegativeAndFail(t *testing.T) {
 }
 
 func TestSnapshotRawValidatorWhenInvalidIndex(t *testing.T) {
-	data := common.K8sManifest{common.RAW: "b"}
+	data := map[string]interface{}{common.RAW: "b"}
 
 	validator := MatchSnapshotRawValidator{}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{data},
+		Docs:  []map[string]interface{}{data},
 		Index: 2,
 	})
 

@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,7 +32,7 @@ func TestContainsDocumentValidatorWhenOk(t *testing.T) {
 	}
 	pass, diff := validator.Validate(&ValidateContext{
 		Index: -1,
-		Docs: []common.K8sManifest{makeManifest(docToTestContainsDocument1),
+		Docs: []map[string]interface{}{makeManifest(docToTestContainsDocument1),
 			makeManifest(docToTestContainsDocument2)},
 	})
 
@@ -50,7 +49,7 @@ func TestContainsDocumentValidatorIndexWhenOk(t *testing.T) {
 	}
 	pass, diff := validator.Validate(&ValidateContext{
 		Index: 1,
-		Docs: []common.K8sManifest{makeManifest(docToTestContainsDocument1),
+		Docs: []map[string]interface{}{makeManifest(docToTestContainsDocument1),
 			makeManifest(docToTestContainsDocument2)},
 	})
 
@@ -68,7 +67,7 @@ func TestContainsDocumentValidatorNoNameWhenOk(t *testing.T) {
 
 	pass, diff := validator.Validate(&ValidateContext{
 		Index: -1,
-		Docs: []common.K8sManifest{makeManifest(docToTestContainsDocument1),
+		Docs: []map[string]interface{}{makeManifest(docToTestContainsDocument1),
 			makeManifest(docToTestContainsDocument2)},
 	})
 
@@ -86,7 +85,7 @@ func TestContainsDocumentValidatorNoNamespaceWhenOk(t *testing.T) {
 
 	pass, diff := validator.Validate(&ValidateContext{
 		Index: -1,
-		Docs: []common.K8sManifest{makeManifest(docToTestContainsDocument1),
+		Docs: []map[string]interface{}{makeManifest(docToTestContainsDocument1),
 			makeManifest(docToTestContainsDocument2)},
 	})
 
@@ -104,7 +103,7 @@ func TestContainsDocumentValidatorNoNameNamespaceWhenOk(t *testing.T) {
 
 	pass, diff := validator.Validate(&ValidateContext{
 		Index: -1,
-		Docs: []common.K8sManifest{makeManifest(docToTestContainsDocument1),
+		Docs: []map[string]interface{}{makeManifest(docToTestContainsDocument1),
 			makeManifest(docToTestContainsDocument2)},
 	})
 
@@ -122,7 +121,7 @@ func TestContainsDocumentValidatorWhenFail(t *testing.T) {
 
 	pass, diff := validator.Validate(&ValidateContext{
 		Index: -1,
-		Docs: []common.K8sManifest{makeManifest(docToTestContainsDocument1),
+		Docs: []map[string]interface{}{makeManifest(docToTestContainsDocument1),
 			makeManifest(docToTestContainsDocument2)},
 	})
 

@@ -1,14 +1,13 @@
 package validators_test
 
 import (
-	"github.com/lrills/helm-unittest/internal/common"
 	"github.com/lrills/helm-unittest/pkg/unittest/snapshot"
 	"github.com/stretchr/testify/mock"
 	yaml "gopkg.in/yaml.v2"
 )
 
-func makeManifest(doc string) common.K8sManifest {
-	manifest := common.K8sManifest{}
+func makeManifest(doc string) map[string]interface{} {
+	manifest := map[string]interface{}{}
 	yaml.Unmarshal([]byte(doc), &manifest)
 	return manifest
 }

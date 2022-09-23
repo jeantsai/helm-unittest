@@ -99,12 +99,12 @@ func parseRenderError(regexPattern, errorMessage string) (string, string) {
 	return filePath, content
 }
 
-func parseYamlFile(rendered string) ([]common.K8sManifest, error) {
+func parseYamlFile(rendered string) ([]map[string]interface{}, error) {
 	decoder := yaml.NewDecoder(strings.NewReader(rendered))
-	parsedYamls := make([]common.K8sManifest, 0)
+	parsedYamls := make([]map[string]interface{}, 0)
 
 	for {
-		parsedYaml := common.K8sManifest{}
+		parsedYaml := map[string]interface{}{}
 		if err := decoder.Decode(parsedYaml); err != nil {
 			if err == io.EOF {
 				break
@@ -121,9 +121,9 @@ func parseYamlFile(rendered string) ([]common.K8sManifest, error) {
 	return parsedYamls, nil
 }
 
-func parseTextFile(rendered string) []common.K8sManifest {
-	manifests := make([]common.K8sManifest, 0)
-	manifest := make(common.K8sManifest)
+func parseTextFile(rendered string) []map[string]interface{} {
+	manifests := make([]map[string]interface{}, 0)
+	manifest := make(map[string]interface{})
 	manifest[common.RAW] = rendered
 
 	if len(manifest) > 0 {
@@ -604,10 +604,10 @@ func (t *TestJob) capabilitiesV3() *v3util.Capabilities {
 
 // parse rendered manifest if it's yaml
 func (t *TestJob) parseManifestsFromOutputOfFiles(outputOfFiles map[string]string) (
-	map[string][]common.K8sManifest,
+	map[string][]map[string]interface{},
 	error,
 ) {
-	manifestsOfFiles := make(map[string][]common.K8sManifest)
+	manifestsOfFiles := make(map[string][]map[string]interface{})
 
 	for file, rendered := range outputOfFiles {
 
@@ -629,7 +629,7 @@ func (t *TestJob) parseManifestsFromOutputOfFiles(outputOfFiles map[string]strin
 
 // run Assert of all assertions of test
 func (t *TestJob) runAssertions(
-	manifestsOfFiles map[string][]common.K8sManifest,
+	manifestsOfFiles map[string][]map[string]interface{},
 	snapshotComparer validators.SnapshotComparer,
 	renderSucceed, failfast bool,
 ) (bool, []*results.AssertionResult) {

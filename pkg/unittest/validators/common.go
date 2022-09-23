@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	"github.com/lrills/helm-unittest/pkg/unittest/snapshot"
 	"github.com/pmezard/go-difflib/difflib"
 )
@@ -23,14 +22,14 @@ type SnapshotComparer interface {
 
 // ValidateContext the context passed to validators
 type ValidateContext struct {
-	Docs     []common.K8sManifest
+	Docs     []map[string]interface{}
 	Index    int
 	Negative bool
 	SnapshotComparer
 }
 
-func (c *ValidateContext) getManifests() ([]common.K8sManifest, error) {
-	manifests := make([]common.K8sManifest, 0)
+func (c *ValidateContext) getManifests() ([]map[string]interface{}, error) {
+	manifests := make([]map[string]interface{}, 0)
 	if c.Index == -1 {
 		manifests = append(manifests, c.Docs...)
 		return manifests, nil
