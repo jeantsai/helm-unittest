@@ -88,21 +88,38 @@ func TestIsNullValidatorWhenInvalidIndex(t *testing.T) {
 }
 
 func TestIsNullValidatorWhenInvalidPath(t *testing.T) {
-	doc := "x:"
+	doc := "a: {}"
 	manifest := makeManifest(doc)
 
-	validator := IsNullValidator{"x.b"}
-	pass, _ := validator.Validate(&ValidateContext{
+	validator := IsNullValidator{"a.x"}
+	pass, diff := validator.Validate(&ValidateContext{
 		Docs: []map[string]interface{}{manifest},
 	})
 
 	// After changed to jsonpath, all cases of invalid path including missing key will pass isNull validator
 	assert.True(t, pass) 
-	// assert.False(t, pass)
+	assert.Equal(t, []string{}, diff)
+}
+
+
+func TestIsNullValidatorWhenInvalidPath2(t *testing.T) {
+	doc := "a: {}"
+	manifest := makeManifest(doc)
+
+	validator := IsNullValidator{"x.y"}
+	pass, _ := validator.Validate(&ValidateContext{
+		Docs: []map[string]interface{}{manifest},
+	})
+
+	// After changed to jsonpath, there two options:
+	//   Option 1: same as the origin one but path without value sucn as "xxx:" 
+	//             is valid in YAML but not valid in JSON. they should be 
+    //             replaced by "xxx: {}"
+	//   Option 2: any invalid path including no-existing path isNull
+	assert.True(t, pass)
 	// assert.Equal(t, []string{
 	// 	"DocumentIndex:	0",
 	// 	"Error:",
-	// 	"	can't get [\"b\"] from a non map type:",
-	// 	"	null",
+	// 	"\tunknown parameter x.y",
 	// }, diff)
 }

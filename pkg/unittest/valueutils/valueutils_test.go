@@ -25,6 +25,7 @@ func TestGetValueOfSetPath(t *testing.T) {
 		"a['d']":                  "no",
 		"a[\"e.f\"]":              "false",
 		"a.g.h":                   "\"quotes\"",
+		"x":                       nil,
 		"a.x":                     nil,
 		`$.a.b[? @.c=="yes"]`:     []interface{}([]interface{}{map[string]interface{}{"c": "yes"}}),
 		"$.a['d']":                "no",
