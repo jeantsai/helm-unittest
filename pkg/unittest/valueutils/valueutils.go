@@ -5,19 +5,28 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"context"
 
 	"github.com/lrills/helm-unittest/internal/common"
 
-	// "github.com/PaesslerAG/gval"
+	"github.com/PaesslerAG/gval"
 	"github.com/PaesslerAG/jsonpath"
 )
 
-// var (
-// 	builder gval.Language
-// )
+var (
+	builder gval.Language
+)
 
-// func init() {
-// 	builder = gval.Full(jsonpath.PlaceholderExtension())
+func init() {
+	builder = gval.Full(jsonpath.PlaceholderExtension())
+}
+
+// // GetValueOfSetPath get the value of the `--set` format path from a manifest
+// func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
+// 	if path == "" {
+// 		return manifest, nil
+// 	}
+// 	return jsonpath.Get(path, manifest)
 // }
 
 // GetValueOfSetPath get the value of the `--set` format path from a manifest
@@ -25,20 +34,12 @@ func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{
 	if path == "" {
 		return manifest, nil
 	}
-	data := interface{}(manifest)
-	return jsonpath.Get(path, data)
+	p, err := builder.NewEvaluable(path)
+	if err != nil {
+		return nil, err
+	}
+	return p(context.Background(), manifest)
 }
-
-// func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
-// 	if path == "" {
-// 		return manifest, nil
-// 	}
-// 	p, err := builder.NewEvaluable(path)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return p(context.Background(), manifest)
-// }
 
 // GetValueOfSetPath get the value of the `--set` format path from a manifest
 // func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
