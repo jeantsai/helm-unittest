@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +13,7 @@ func TestIsAPiVersionValidatorWhenOk(t *testing.T) {
 
 	validator := IsAPIVersionValidator{"v1"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 	assert.True(t, pass)
 	assert.Equal(t, []string{}, diff)
@@ -26,7 +25,7 @@ func TestIsAPiVersionValidatorWhenNegativeAndOk(t *testing.T) {
 
 	validator := IsAPIVersionValidator{"v2"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -40,7 +39,7 @@ func TestIsAPIVersionValidatorWhenFail(t *testing.T) {
 
 	validator := IsAPIVersionValidator{"v2"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -59,7 +58,7 @@ func TestIsAPIVersionValidatorWhenNegativeAndFail(t *testing.T) {
 
 	validator := IsAPIVersionValidator{"v1"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -77,7 +76,7 @@ func TestIsAPIVersionValidatorWhenInvalidIndex(t *testing.T) {
 
 	validator := IsAPIVersionValidator{"v1"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 

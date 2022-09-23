@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,7 +21,7 @@ func TestEqualValidatorWhenOk(t *testing.T) {
 	validator := EqualValidator{"a.b[0].c", 123}
 
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -34,7 +33,7 @@ func TestEqualValidatorMultiLineWhenOk(t *testing.T) {
 	validator := EqualValidator{"a.e", "Line1\nLine2\n"}
 
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -46,7 +45,7 @@ func TestEqualValidatorWhenNegativeAndOk(t *testing.T) {
 
 	validator := EqualValidator{"a.b[0].c", 321}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -62,7 +61,7 @@ func TestEqualValidatorWhenFail(t *testing.T) {
 		map[interface{}]interface{}{"d": 321},
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -96,7 +95,7 @@ a:
 		map[interface{}]interface{}{"c": 321},
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest1, manifest2},
+		Docs:  []map[string]interface{}{manifest1, manifest2},
 		Index: -1,
 	})
 
@@ -125,7 +124,7 @@ func TestEqualValidatorMultiManifestWhenBothFail(t *testing.T) {
 		map[interface{}]interface{}{"c": 321},
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest, manifest},
+		Docs:  []map[string]interface{}{manifest, manifest},
 		Index: -1,
 	})
 
@@ -163,7 +162,7 @@ func TestEqualValidatorWhenNegativeAndFail(t *testing.T) {
 
 	v := EqualValidator{"a.b[0]", map[interface{}]interface{}{"c": 123}}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -181,7 +180,7 @@ func TestEqualValidatorWhenWrongPath(t *testing.T) {
 
 	v := EqualValidator{"a.b.e", map[string]int{"d": 321}}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -205,7 +204,7 @@ func TestEqualValidatorWhenInvalidIndex(t *testing.T) {
 	manifest := makeManifest(docToTestEqual)
 	validator := EqualValidator{"a.b[0].c", 123}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 

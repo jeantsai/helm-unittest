@@ -7,19 +7,41 @@ import (
 	"strconv"
 
 	"github.com/lrills/helm-unittest/internal/common"
+
+	// "github.com/PaesslerAG/gval"
 	"github.com/PaesslerAG/jsonpath"
 )
 
+// var (
+// 	builder gval.Language
+// )
+
+// func init() {
+// 	builder = gval.Full(jsonpath.PlaceholderExtension())
+// }
+
 // GetValueOfSetPath get the value of the `--set` format path from a manifest
-func GetValueOfSetPath(manifest common.K8sManifest, path string) (interface{}, error) {
+func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
 	if path == "" {
 		return manifest, nil
 	}
-	return jsonpath.Get(path, manifest)
+	data := interface{}(manifest)
+	return jsonpath.Get(path, data)
 }
 
-// // GetValueOfSetPath get the value of the `--set` format path from a manifest
-// func GetValueOfSetPath(manifest common.K8sManifest, path string) (interface{}, error) {
+// func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
+// 	if path == "" {
+// 		return manifest, nil
+// 	}
+// 	p, err := builder.NewEvaluable(path)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return p(context.Background(), manifest)
+// }
+
+// GetValueOfSetPath get the value of the `--set` format path from a manifest
+// func GetValueOfSetPath(manifest map[string]interface{}, path string) (interface{}, error) {
 // 	if path == "" {
 // 		return manifest, nil
 // 	}
@@ -89,7 +111,7 @@ func (tr *fetchTraverser) traverseMapKey(key string) error {
 	if dmap, ok := tr.data.(map[interface{}]interface{}); ok {
 		tr.data = dmap[key]
 		return nil
-	} else if dman, ok := tr.data.(common.K8sManifest); ok {
+	} else if dman, ok := tr.data.(map[string]interface{}); ok {
 		tr.data = dman[key]
 		return nil
 	}

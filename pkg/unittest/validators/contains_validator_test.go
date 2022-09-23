@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 
 	"github.com/stretchr/testify/assert"
@@ -48,7 +47,7 @@ a:
 // 		true,
 // 	}
 // 	pass, diff := validator.Validate(&ValidateContext{
-// 		Docs: []common.K8sManifest{manifest},
+// 		Docs: []map[string]interface{}{manifest},
 // 	})
 
 // 	assert.True(t, pass)
@@ -65,7 +64,7 @@ func TestContainsValidatorWhenOk(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -83,7 +82,7 @@ func TestMultiManifestContainsValidatorWhenOk(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest1, manifest2},
+		Docs:  []map[string]interface{}{manifest1, manifest2},
 		Index: -1,
 	})
 
@@ -107,7 +106,7 @@ a:
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -132,7 +131,7 @@ a:
 		true,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -157,7 +156,7 @@ a:
 		true,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -184,7 +183,7 @@ func TestContainsValidatorWhenNegativeAndOk(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -202,7 +201,7 @@ func TestContainsValidatorWhenFail(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -227,7 +226,7 @@ a:
     - c: hello world
 `
 	manifest2 := makeManifest(extraDoc)
-	manifests := []common.K8sManifest{manifest1, manifest2}
+	manifests := []map[string]interface{}{manifest1, manifest2}
 
 	validator := ContainsValidator{
 		"a.b",
@@ -253,7 +252,7 @@ a:
 
 func TestContainsValidatorMultiManifestWhenBothFail(t *testing.T) {
 	manifest1 := makeManifest(docToTestContains)
-	manifests := []common.K8sManifest{manifest1, manifest1}
+	manifests := []map[string]interface{}{manifest1, manifest1}
 
 	validator := ContainsValidator{
 		"a.b",
@@ -299,7 +298,7 @@ func TestContainsValidatorWhenNegativeAndFail(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -328,12 +327,12 @@ a:
 
 	validator := ContainsValidator{
 		"a.b",
-		common.K8sManifest{"d": "foo bar"},
+		map[string]interface{}{"d": "foo bar"},
 		nil,
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -351,12 +350,12 @@ func TestContainsValidatorWhenInvalidIndex(t *testing.T) {
 
 	validator := ContainsValidator{
 		"a.b",
-		common.K8sManifest{"d": "foo bar"},
+		map[string]interface{}{"d": "foo bar"},
 		nil,
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 
@@ -372,12 +371,12 @@ func TestContainsValidatorWhenInvalidPath(t *testing.T) {
 
 	validator := ContainsValidator{
 		"a.b.e",
-		common.K8sManifest{"e": "bar"},
+		map[string]interface{}{"e": "bar"},
 		nil,
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -406,7 +405,7 @@ func TestContainsValidatorWhenMultipleTimesInArray(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -425,7 +424,7 @@ func TestContainsValidatorInverseWhenNotMultipleTimesInArray(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -445,7 +444,7 @@ func TestContainsValidatorWhenNotMultipleTimesInArray(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -472,7 +471,7 @@ func TestContainsValidatorWhenNotFoundMultipleTimesInArray(t *testing.T) {
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -501,7 +500,7 @@ func TestContainsValidatorInverseWhenNotFoundMultipleTimesInArray(t *testing.T) 
 		false,
 	}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 

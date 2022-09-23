@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
@@ -18,7 +17,7 @@ func TestMatchRegexRawValidatorWhenOk(t *testing.T) {
 
 	validator := MatchRegexRawValidator{"^This"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.True(t, pass)
@@ -30,7 +29,7 @@ func TestMatchRegexRawValidatorWhenNegativeAndOk(t *testing.T) {
 
 	validator := MatchRegexRawValidator{"^foo"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 	assert.True(t, pass)
@@ -38,11 +37,11 @@ func TestMatchRegexRawValidatorWhenNegativeAndOk(t *testing.T) {
 }
 
 func TestMatchRegexRawValidatorWhenRegexCompileFail(t *testing.T) {
-	manifest := common.K8sManifest{"raw": ""}
+	manifest := map[string]interface{}{"raw": ""}
 
 	validator := MatchRegexRawValidator{"+"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 	assert.False(t, pass)
 	assert.Equal(t, []string{
@@ -56,7 +55,7 @@ func TestMatchRegexRawValidatorWhenMatchFail(t *testing.T) {
 
 	validator := MatchRegexRawValidator{"^foo"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 	assert.False(t, pass)
 	assert.Equal(t, []string{
@@ -72,7 +71,7 @@ func TestMatchRegexRawValidatorWhenNegativeAndMatchFail(t *testing.T) {
 
 	validator := MatchRegexRawValidator{"^This"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -90,7 +89,7 @@ func TestMatchRegexRawValidatorWhenNoPattern(t *testing.T) {
 
 	validator := MatchRegexRawValidator{""}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -105,7 +104,7 @@ func TestMatchRegexRawValidatorWhenInvalidIndex(t *testing.T) {
 
 	validator := MatchRegexRawValidator{"^This"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 

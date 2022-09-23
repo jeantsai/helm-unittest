@@ -3,7 +3,6 @@ package validators_test
 import (
 	"testing"
 
-	"github.com/lrills/helm-unittest/internal/common"
 	. "github.com/lrills/helm-unittest/pkg/unittest/validators"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +13,7 @@ func TestIsNullValidatorWhenOk(t *testing.T) {
 
 	v := IsNullValidator{"a"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 	assert.True(t, pass)
 	assert.Equal(t, []string{}, diff)
@@ -26,7 +25,7 @@ func TestIsNullValidatorWhenNegativeAndOk(t *testing.T) {
 
 	v := IsNullValidator{"a"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -40,7 +39,7 @@ func TestIsNullValidatorWhenFail(t *testing.T) {
 
 	v := IsNullValidator{"a"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	assert.False(t, pass)
@@ -58,7 +57,7 @@ func TestIsNullValidatorWhenNegativeAndFail(t *testing.T) {
 
 	v := IsNullValidator{"a"}
 	pass, diff := v.Validate(&ValidateContext{
-		Docs:     []common.K8sManifest{manifest},
+		Docs:     []map[string]interface{}{manifest},
 		Negative: true,
 	})
 
@@ -77,7 +76,7 @@ func TestIsNullValidatorWhenInvalidIndex(t *testing.T) {
 
 	validator := IsNullValidator{"a"}
 	pass, diff := validator.Validate(&ValidateContext{
-		Docs:  []common.K8sManifest{manifest},
+		Docs:  []map[string]interface{}{manifest},
 		Index: 2,
 	})
 
@@ -94,7 +93,7 @@ func TestIsNullValidatorWhenInvalidPath(t *testing.T) {
 
 	validator := IsNullValidator{"x.b"}
 	pass, _ := validator.Validate(&ValidateContext{
-		Docs: []common.K8sManifest{manifest},
+		Docs: []map[string]interface{}{manifest},
 	})
 
 	// After changed to jsonpath, all cases of invalid path including missing key will pass isNull validator
